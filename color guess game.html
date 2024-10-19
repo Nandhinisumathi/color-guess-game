@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Guessing Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f7c0e6cc;
+        }
+        #container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px; 
+            row-gap: 20px; 
+            margin-top: 20px;
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto; 
+        }
+        .square {
+            height: 100px;
+            border: 2px solid #000;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        #colorDisplay {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #reset {
+            font-size: 24px; 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guess the Color!</h1>
+    <div id="colorDisplay">Color Name</div>
+    <div id="container"></div>
+    <button id="reset"><h4>New Colors</h4></button>
+    <div id="message"></div>
+
+    <script>
+        const colorNames = [
+            "red", "green", "blue", "yellow", "orange", 
+            "purple", "pink", "cyan", "magenta", "lime", 
+            "grey", "black", "white", "teal", "navy", 
+            "violet", "gold", "brown", "silver", "crimson"
+        ];
+
+        let pickedColor;
+
+        const container = document.getElementById("container");
+        const colorDisplay = document.getElementById("colorDisplay");
+        const messageDisplay = document.getElementById("message");
+        const resetButton = document.getElementById("reset");
+
+        init();
+
+        function init() {
+            setupSquares();
+            reset();
+        }
+
+        function setupSquares() {
+            colorNames.forEach(color => {
+                const square = document.createElement("div");
+                square.classList.add("square");
+                square.style.backgroundColor = color;
+                container.appendChild(square);
+
+                square.addEventListener("click", function() {
+                    const clickedColor = this.style.backgroundColor;
+                    if (clickedColor === pickedColor) {
+                        messageDisplay.textContent = "Correct! You guessed the color";
+                        changeColors(clickedColor);
+                        resetButton.textContent = "Play Again?";
+                    } else {
+                        this.style.backgroundColor = "#f0f0f0"; 
+                        messageDisplay.textContent = "Wrong! Try Again";
+                    }
+                });
+            });
+        }
+
+        function reset() {
+            pickedColor = pickColor();
+            colorDisplay.textContent = pickedColor;
+            messageDisplay.textContent = "";
+            resetButton.textContent = "New Colors";
+
+            const squares = document.querySelectorAll(".square");
+            const usedColors = [];
+
+            squares.forEach(square => {
+                let color;
+                do {
+                    color = pickRandomColor();
+                } while (usedColors.includes(color));
+                usedColors.push(color);
+                square.style.backgroundColor = color;
+            });
+        }
+
+        function changeColors(color) {
+            const squares = document.querySelectorAll(".square");
+            squares.forEach(square => {
+                square.style.backgroundColor = color;
+            });
+        }
+
+        function pickColor() {
+            const randomIndex = Math.floor(Math.random() * colorNames.length);
+            return colorNames[randomIndex];
+        }
+
+        function pickRandomColor() {
+            const randomIndex = Math.floor(Math.random() * colorNames.length);
+            return colorNames[randomIndex];
+        }
+
+        resetButton.addEventListener("click", reset);
+    </script>
+</body>
+</html>
